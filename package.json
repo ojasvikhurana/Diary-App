@@ -1,14 +1,26 @@
 {
   "name": "blog-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "- It allows user to add, show, update and delete their blogs.\r - Tech Stack Used - HTML/CSS, Semantic UI, express, MongoDB",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ojasvi Khurana",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
-  }
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ojasvik/Blog-App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ojasvik/Blog-App/issues"
+  },
+  "homepage": "https://github.com/ojasvik/Blog-App#readme"
 }
