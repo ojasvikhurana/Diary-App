@@ -2,12 +2,15 @@ let express = require("express");
 let app = express();
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
+let expressSanitizer= require("express-sanitizer");
+let methodOverride = require("method-override");
 
 mongoose.connect("mongodb://localhost/blogdata",{useNewUrlParser:true,useUnifiedTopology:true});
 app.set("view engine","ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
-
+app.use(methodOverride("_method"));
+app.use(expressSanitizer());
 //mongoose model config
 let blogSchema = new mongoose.Schema({
     title: String,
@@ -39,8 +42,12 @@ app.get("/blogs",function(req,res){
     });
 });
 
+app.get("/blogs/new", function(req,res){
+    res.render("new");
+});
 //create route
 app.post("/blogs",function(req,res){
+    req.body.blog.body = req.sanitize(req.body.blog.body);
     Blog.create(
         req.body.blog
     ,function(err,newBlog){
@@ -50,6 +57,29 @@ app.post("/blogs",function(req,res){
             res.redirect("/blogs");
         }
     })
+});
+
+//edit route
+app.get("/blogs/:id/edit",function(req,res){
+    Blog.findById(req.params.id,function(err,foundblog){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.render("edit",{blog:foundblog});
+        }
+    });
+   
+});
+
+//update route
+app.put("/blogs/:id",function(req,res){
+    Blog.findByIdAndUpdate(req.params.id,req.body.blog,function(err,updatedBlod){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.redirect("/blogs/" + req.params.id);
+        }
+    });
 });
 
 //show route
@@ -63,8 +93,19 @@ app.get("/blogs/:id",function(req,res){
     })
 });
 
-app.get("/blogs/new", function(req,res){
-    res.render("new");
-})
+//destroy route
+app.delete("/blogs/:id",function(req,res){
+   // res.send("Delete route");
+    Blog.findByIdAndDelete(req.params.id,function(err){
+        if(err){
+            res.redirect("/blogs");
+        }else{
+            res.redirect("/blogs");
+        }
+    });
+ 
+});
+
+
 
 app.listen(3000);
